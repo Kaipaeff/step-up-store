@@ -2,6 +2,12 @@ import Card from "./components/Card";
 import Header from "./components/Header";
 import Drawer from "./components/Drawer";
 
+const arr = [
+  { name: 'Nike Blazer Mid Suede', price: 9000, imageUrl: '/img/sneakers/1.jpg' },
+  { name: 'Nike Air Max 270', price: 8700, imageUrl: '/img/sneakers/2.jpg' },
+  { name: 'Nike Blazer Mid Suede', price: 9500, imageUrl: '/img/sneakers/3.jpg' },
+  { name: 'Puma X Aka Boku Future Rider', price: 7900, imageUrl: '/img/sneakers/4.jpg' },
+]
 
 function App() {
   return (
@@ -21,10 +27,15 @@ function App() {
         </div>
 
         <div className="d-flex">
-          <Card />
-          <Card />
-          <Card />
-          <Card />
+
+          {arr.map((el) => (
+            <Card
+              name={el.name}
+              price={el.price}
+              imageUrl={el.imageUrl} />
+          ))}
+
+
         </div>
       </div>
     </div>

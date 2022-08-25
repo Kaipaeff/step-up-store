@@ -1,8 +1,10 @@
+import styles from './Header.module.scss'
+
 function Header() {
   return (
     <header className="d-flex justify-between	align-center p-40">
       <div className="d-flex align-center">
-        <img width={40} height={40} src="/img/logo.svg" alt="logo" className="logo" />
+        <img width={40} height={40} src="/img/logo.svg" alt="logo" className={styles.logo} />
         <div>
           <h3>REACT SNEAKERS</h3>
           <p className="opacity-5" >Магазин фирменных кросовок</p>
