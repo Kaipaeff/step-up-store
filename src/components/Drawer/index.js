@@ -13,7 +13,7 @@ function Drawer({ onClose, onRemove, items = [] }) {
           items.length ?
             <div className={styles.items}>
               {items.map((el) => (
-                <div className={styles.cartItem}>
+                <div key={el.id} className={styles.cartItem}>
                   <img width={70} height={70} className="mr-20" src={el.imageUrl} alt="Sneakers" />
                   <div className="mr-20">
                     <p className="mb-5">{el.name}</p>
