@@ -1,52 +1,94 @@
-import styles from './Drawer.module.scss'
+import React from 'react'
+
+import axios from 'axios';
+
+import styles from './Drawer.module.scss';
+import Info from '../Info';
+import AppContext from '../../context';
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function Drawer({ onClose, onRemove, items = [] }) {
+
+  const { cartItems, setCartItems } = React.useContext(AppContext);
+  const [orderId, setOrderId] = React.useState(null);
+  const [isOrderComplete, setIsOrderComplete] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+
+
+  const onClickOrder = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.post('https://6308c6a4722029d9ddd82e8a.mockapi.io/orders', {
+        items: cartItems,
+      });
+      setOrderId(data.id);
+      setIsOrderComplete(true);
+      setCartItems([]);
+
+      for (let i = 0; i < cartItems.length; i++) {
+        const item = cartItems[i];
+        await axios.delete('https://6308c6a4722029d9ddd82e8a.mockapi.io/cart/' + item.id);
+        await delay(1000);
+      }
+
+    } catch (error) {
+      alert('Не удалось создать заказ :(');
+    }
+    setIsLoading(false);
+  };
+
   return (
     <div className={styles.overlay}>
       <div className={styles.drawer}>
-        <h2 className="d-flex justify-between mb-30">Корзина
-          <img onClick={onClose} className={styles.removeBtn}
-            src="/img/icons/remove-btn.svg" alt="Close" />
+        <h2 className="d-flex justify-between mb-30">
+          Корзина <img onClick={onClose} className={styles.removeBtn} src="/img/icons/remove-btn.svg" alt="Close" />
         </h2>
 
-        {
-          items.length ?
-            <div className={styles.items}>
-              {items.map((el) => (
-                <div className={styles.cartItem}>
-                  <img width={70} height={70} className="mr-20" src={el.imageUrl} alt="Sneakers" />
-                  <div className="mr-20">
-                    <p className="mb-5">{el.name}</p>
-                    <b>{el.price}</b>
-                  </div>
-                  <img onClick={() => onRemove(el.id)} className={styles.removeBtn} src="/img/icons/remove-btn.svg" alt="Remove" />
+        {items.length ? (
+          <><div className={styles.items}>
+            {items.map((el) => (
+              <div key={el.id} className={styles.cartItem}>
+                <img width={70} height={70} className="mr-20" src={el.imageUrl} alt="Sneakers" />
+                <div className="mr-20">
+                  <p className="mb-5">{el.name}</p>
+                  <b>{el.price}</b>
                 </div>
-              ))}
-            </div> :
-            <div className="cartEmpty d-flex align-center justify-center flex-column flex">
-              <img className="mb-20" width={120} height={120} src="/img/icons/empty-cart.jpg" alt="Empty cart" />
-              <h2>Ваша корзина пуста</h2>
-              <p className="opacity-6">Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.</p>
-              <button onClick={onClose} className="greenButton">
-                <img src="/img/icons/arrow.svg" alt="Arrow" />
-                Вернуться назад
+                <img onClick={() => onRemove(el.id)} className={styles.removeBtn} src="/img/icons/remove-btn.svg"
+                  alt="Remove" />
+              </div>
+            ))}
+          </div><div className='cartTotalBlock'>
+              <ul className={styles.cartTotalBlock}>
+                <li>
+                  <span>Итого:</span>
+                  <div></div>
+                  <b>21 400 руб.</b>
+                </li>
+              </ul>
+
+              <button disabled={isLoading} onClick={onClickOrder} className={styles.greenButton}>
+                Оформить заказ <img width={13} height={12} src="/img/icons/arrow.svg" alt="Arrow" />
               </button>
-            </div>
-        }
+            </div></>
 
-        <ul className={styles.cartTotalBlock}>
-          <li>
-            <span>Итого:</span>
-            <div></div>
-            <b>21 400 руб.</b>
-          </li>
-        </ul>
-        <button className={styles.greenButton}>Оформить заказ <img width={13} height={12} src="/img/icons/arrow.svg" alt="Arrow" /></button>
+        ) : (
 
+          <Info
+            title={isOrderComplete ? "Заказ оформлен!" : "Корзина пуста"}
+            description={
+              isOrderComplete
+                ? `Ваш заказ #${orderId} принят к обработке`
+                : `Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.`
+            }
+            image={isOrderComplete ? "img/icons/complete-order.jpg" : "img/icons/empty-cart.jpg"}
+          />
+        )}
       </div>
-      </div>
-      )
+    </div >
+  );
 }
 
 
-      export default Drawer;
+export default Drawer;
