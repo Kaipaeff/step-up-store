@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/StepUp-Store/static/css/main.bd60af58.css",
-    "main.js": "/StepUp-Store/static/js/main.918e5cc1.js",
+    "main.js": "/StepUp-Store/static/js/main.14c4ba63.js",
     "index.html": "/StepUp-Store/index.html",
     "main.bd60af58.css.map": "/StepUp-Store/static/css/main.bd60af58.css.map",
-    "main.918e5cc1.js.map": "/StepUp-Store/static/js/main.918e5cc1.js.map"
+    "main.14c4ba63.js.map": "/StepUp-Store/static/js/main.14c4ba63.js.map"
   },
   "entrypoints": [
     "static/css/main.bd60af58.css",
-    "static/js/main.918e5cc1.js"
+    "static/js/main.14c4ba63.js"
   ]
 }
