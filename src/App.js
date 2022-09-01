@@ -9,6 +9,7 @@ import AppContext from './context';
 
 import Home from './pages/Home';
 import Favourite from './pages/Favourite';
+import Orders from './pages/Orders';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
   const [searchValue, setSearchValue] = React.useState('');
   const [cardOpened, setCardOpened] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+
 
   // React.useEffect(() => {
   //   fetch('https://6308c6a4722029d9ddd82e8a.mockapi.io/items')
@@ -32,15 +34,18 @@ function App() {
 
   React.useEffect(() => {
     async function fetchData() {
-      const cartRes = await axios.get('https://6308c6a4722029d9ddd82e8a.mockapi.io/cart');
-      const favouritesRes = await axios.get('https://6308c6a4722029d9ddd82e8a.mockapi.io/favourites');
-      const itemsRes = await axios.get('https://6308c6a4722029d9ddd82e8a.mockapi.io/items');
+      try {
+        const cartRes = await axios.get('https://6308c6a4722029d9ddd82e8a.mockapi.io/cart');
+        const favouritesRes = await axios.get('https://6308c6a4722029d9ddd82e8a.mockapi.io/favourites');
+        const itemsRes = await axios.get('https://6308c6a4722029d9ddd82e8a.mockapi.io/items');
 
-      setIsLoading(false);
-
-      setCartItems(cartRes.data);
-      setFavourites(favouritesRes.data);
-      setItems(itemsRes.data);
+        setIsLoading(false);
+        setCartItems(cartRes.data);
+        setFavourites(favouritesRes.data);
+        setItems(itemsRes.data);
+      } catch (error) {
+        alert('Ошибка запроса данных')
+      }
     }
 
     fetchData();
@@ -48,12 +53,23 @@ function App() {
 
   const onAddToCart = async (obj) => {
     try {
-      if (cartItems.find((item) => Number(item.id) === Number(obj.id))) {
-        axios.delete(`https://6308c6a4722029d9ddd82e8a.mockapi.io/cart/${obj.id}`);
-        setCartItems(prev => prev.filter((el) => Number(el.id) !== Number(obj.id)))
+      const findItem = cartItems.find((item) => Number(item.parentId) === Number(obj.id))
+      if (findItem) {
+        setCartItems(prev => prev.filter((el) => Number(el.parentId) !== Number(obj.id)))
+        await axios.delete(`https://6308c6a4722029d9ddd82e8a.mockapi.io/cart/${findItem.id}`);
       } else {
-        axios.post('https://6308c6a4722029d9ddd82e8a.mockapi.io/cart', obj);
-        setCartItems(prev => [...prev, obj]);
+        setCartItems((prev) => [...prev, obj]);
+        const {data} = await axios.post('https://6308c6a4722029d9ddd82e8a.mockapi.io/cart', obj);
+        setCartItems((prev) => prev.map(item => {
+          if (item.parentId === data.parentId) {
+            return {
+              ...item, 
+              id: data.id
+            }; 
+          }
+          return item;
+         }));
+        
       }
     }
     catch (error) {
@@ -62,15 +78,19 @@ function App() {
   };
 
 
-  const onRemoveItem = (id) => {
-    axios.delete(`https://6308c6a4722029d9ddd82e8a.mockapi.io/cart/${id}`);
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  const onRemoveItem = async (id) => {
+    try {
+      await axios.delete(`https://6308c6a4722029d9ddd82e8a.mockapi.io/cart/${id}`);
+      setCartItems((prev) => prev.filter((item) => Number(item.id) !== Number(id)));
+    } catch (error) {
+      alert('Не удалось удалить из корзины')
+    }
   };
 
   const onAddToFavourite = async (obj) => {
     try {
       if (favourites.find((favObj) => Number(favObj.id) === Number(obj.id))) {
-        axios.delete(`https://6308c6a4722029d9ddd82e8a.mockapi.io/favourites/${obj.id}`);
+        await axios.delete(`https://6308c6a4722029d9ddd82e8a.mockapi.io/favourites/${obj.id}`);
         setFavourites(prev => prev.filter((item) => item.id !== obj.id));
       } else {
         const { data } = await axios.post('https://6308c6a4722029d9ddd82e8a.mockapi.io/favourites', obj);
@@ -86,15 +106,30 @@ function App() {
   }
 
   const isItemAdded = (id) => {
-    return cartItems.some((obj) => Number(obj.id) === Number(id));
+    return cartItems.some((obj) => Number(obj.parentId) === Number(id));
   };
 
   return (
     <AppContext.Provider
-      value={{ items, cartItems, favourites, isItemAdded, onAddToFavourite, setCardOpened, setCartItems }}>
-      
+      value={{
+        items,
+        cartItems,
+        favourites,
+        isItemAdded,
+        onAddToFavourite,
+        onAddToCart,
+        setCardOpened,
+        setCartItems
+      }}>
+
       <div className="wrapper clear">
-        {cardOpened && <Drawer items={cartItems} onClose={() => setCardOpened(false)} onRemove={onRemoveItem} />}
+
+        <Drawer
+          items={cartItems}
+          onClose={() => setCardOpened(false)}
+          onRemove={onRemoveItem}
+          opened={cardOpened}
+        />
 
         <Header onClickCart={() => setCardOpened(true)} />
 
@@ -115,6 +150,10 @@ function App() {
 
         <Routes>
           <Route path="/favourite" element={<Favourite />} />
+        </Routes>
+
+        <Routes>
+          <Route path="/orders" element={<Orders />} />
         </Routes>
 
       </div>

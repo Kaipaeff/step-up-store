@@ -33,7 +33,7 @@ const renderItems = () => {
     <div className="content p-40">
 
 
-      <div className="d-flex align-center mb-40 justify-between">
+      <div className="d-flex align-center mb-10 justify-between">
         <h1>{searchValue ? `Поиск по запросу: "${searchValue}"` : 'Все кроссовки'}</h1>
         <div className="search-block d-flex justify-start align-center">
           <img width={20} height={20} src="/img/icons/search.jpg" alt="search icon"></img>
@@ -42,7 +42,8 @@ const renderItems = () => {
         </div>
       </div>
 
-      <div className="d-flex flex-wrap justify-between p-20">
+      
+      <div className="d-flex flex-wrap justify-between p-20 contentBlock">
         {renderItems()}
       </div>
     </div>
