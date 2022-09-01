@@ -22,24 +22,24 @@ function Orders() {
 
 
   return(
-    <div className="content p-40">
+    <><div className="d-flex align-center justify-between contentHeader">
+      <h1>Мои заказы</h1>
+    </div>
+    
+    <div className="content">
 
-      <div className="d-flex align-center mb-40 justify-between">
-        <h1>Мои заказы</h1>
-      </div>
 
-      <div className="d-flex flex-wrap justify-between p-20 contentBlock">
+        <div className="d-flex flex-wrap justify-between contentBlock">
 
-      {(isLoading ? [...Array(8)] : orders).map((item, id) => (
-            <Card 
+          {(isLoading ? [...Array(8)] : orders).map((item, id) => (
+            <Card
               key={id}
               loading={isLoading}
-              {...item}
-            />
+              {...item} />
           ))}
-      </div>
+        </div>
 
-    </div>
+      </div></>
   )
 }
 

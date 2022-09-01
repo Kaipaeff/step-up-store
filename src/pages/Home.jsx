@@ -30,23 +30,24 @@ const renderItems = () => {
 }
 
   return(
-    <div className="content p-40">
 
-
-      <div className="d-flex align-center mb-10 justify-between">
-        <h1>{searchValue ? `Поиск по запросу: "${searchValue}"` : 'Все кроссовки'}</h1>
-        <div className="search-block d-flex justify-start align-center">
-          <img width={20} height={20} src="/img/icons/search.jpg" alt="search icon"></img>
-          {searchValue && <img onClick={() => { setSearchValue('') }} className="clear cu-p" src="/img/icons/clearSearch-btn.svg" alt="Clear" />}
-          <input onChange={onChangeSearchInput} value={searchValue} placeholder="Поиск..." />
-        </div>
+      <><div className="d-flex align-center justify-between contentHeader">
+      <h1>{searchValue ? `Поиск по запросу: "${searchValue}"` : 'Все кроссовки'}</h1>
+      <div className="search-block d-flex justify-start align-center">
+        <img width={20} height={20} src="/img/icons/search.jpg" alt="search icon"></img>
+        {searchValue && <img onClick={() => { setSearchValue(''); } } className="clear cu-p" src="/img/icons/clearSearch-btn.svg" alt="Clear" />}
+        <input onChange={onChangeSearchInput} value={searchValue} placeholder="Поиск..." />
       </div>
-
       
-      <div className="d-flex flex-wrap justify-between p-20 contentBlock">
-        {renderItems()}
-      </div>
-    </div>
+    </div><div className="content">
+
+
+
+
+        <div className="d-flex flex-wrap justify-between contentBlock">
+          {renderItems()}
+        </div>
+      </div></>
   )
 }
 

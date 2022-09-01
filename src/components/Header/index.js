@@ -10,7 +10,7 @@ function Header(props) {
 
 
   return (
-    <header className="d-flex justify-between	align-center p-40">
+    <header className="d-flex justify-between	align-center">
       <Link to="/">
         <div className="d-flex align-center">
           <img width={90} height={90} src="/img/myLogo.svg" alt="logo" className={styles.logo} />
