@@ -14,7 +14,7 @@ const Info = ( {title, image, description} ) => {
         <p className="opacity-6">{ description }</p>
         
         <button onClick={() => setCardOpened(false)} className="greenButton">
-          <img src="/img/icons/arrow.svg" alt="Arrow" />
+          <img src="img/icons/arrow.svg" alt="Arrow" />
           Вернуться назад
         </button>
 
