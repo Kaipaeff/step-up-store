@@ -13,7 +13,7 @@ function Favourite() {
         <h1>Избранное</h1>
       </div>
 
-      <div className="d-flex flex-wrap justify-between p-20">
+      <div className="d-flex flex-wrap justify-between p-20 contentBlock">
       {favourites.map((item, id) => (
             <Card
               key={id}

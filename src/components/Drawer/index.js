@@ -1,21 +1,20 @@
-import React from 'react'
-
+import React from 'react';
 import axios from 'axios';
 
-import styles from './Drawer.module.scss';
 import Info from '../Info';
-import AppContext from '../../context';
+import {useCart} from '../../hooks/useCart';
+
+import styles from './Drawer.module.scss';
+
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function Drawer({ onClose, onRemove, items = [] }) {
-
-  const { cartItems, setCartItems } = React.useContext(AppContext);
+function Drawer({ onClose, onRemove, items = [], opened}) {
+  
+  const { cartItems, setCartItems, totalPrice } = useCart();
   const [orderId, setOrderId] = React.useState(null);
   const [isOrderComplete, setIsOrderComplete] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-
-
 
   const onClickOrder = async () => {
     try {
@@ -40,10 +39,10 @@ function Drawer({ onClose, onRemove, items = [] }) {
   };
 
   return (
-    <div className={styles.overlay}>
+    <div className={ `${styles.overlay} ${opened ? styles.overlayVisible : ''}` } >
       <div className={styles.drawer}>
         <h2 className="d-flex justify-between mb-30">
-          Корзина <img onClick={onClose} className={styles.removeBtn} src="/img/icons/remove-btn.svg" alt="Close" />
+          Корзина <img onClick={onClose} className={styles.removeBtnOne} src="/img/icons/remove-btn.svg" alt="Close" />
         </h2>
 
         {items.length ? (
@@ -53,7 +52,7 @@ function Drawer({ onClose, onRemove, items = [] }) {
                 <img width={70} height={70} className="mr-20" src={el.imageUrl} alt="Sneakers" />
                 <div className="mr-20">
                   <p className="mb-5">{el.name}</p>
-                  <b>{el.price}</b>
+                  <b>{el.price} руб.</b>
                 </div>
                 <img onClick={() => onRemove(el.id)} className={styles.removeBtn} src="/img/icons/remove-btn.svg"
                   alt="Remove" />
@@ -64,7 +63,7 @@ function Drawer({ onClose, onRemove, items = [] }) {
                 <li>
                   <span>Итого:</span>
                   <div></div>
-                  <b>21 400 руб.</b>
+                  <b>{totalPrice} руб.</b>
                 </li>
               </ul>
 
